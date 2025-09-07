@@ -35,7 +35,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where id = #{id}
     </select>
     <select id="selectPartnerVoList" resultType="com.dkd.manage.domain.vo.PartnerVO">
-        select p.* , count(*) as nodeCount  from tb_partner p
+        select p.* , count(n.id) as nodeCount  from tb_partner p
         left join tb_node n on p.id = n.partner_id
         <where>
             <if test="partnerName != null  and partnerName != ''"> and p.partner_name like concat('%', #{partnerName}, '%')</if>
