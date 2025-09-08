@@ -2,6 +2,7 @@ package com.dkd.manage.service.impl;
 
 import java.util.List;
 import com.dkd.common.utils.DateUtils;
+import com.dkd.common.utils.SecurityUtils;
 import com.dkd.manage.domain.vo.PartnerVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -54,6 +55,8 @@ public class PartnerServiceImpl implements IPartnerService
     @Override
     public int insertPartner(Partner partner)
     {
+        //密码加密
+        partner.setPassword(SecurityUtils.encryptPassword(partner.getPassword()));
         partner.setCreateTime(DateUtils.getNowDate());
         return partnerMapper.insertPartner(partner);
     }
