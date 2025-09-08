@@ -67,4 +67,12 @@ public interface IPartnerService
      * @return 合作商VO集合
      */
     List<PartnerVO> selectPartnerVoList(Partner partner);
+
+    /**
+     * 重置合作商密码
+     *
+     * @param id 合作商主键
+     * @return 结果
+     */
+    int resetPwd(Long id);
 }

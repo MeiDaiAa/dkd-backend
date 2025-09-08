@@ -114,4 +114,15 @@ public class PartnerController extends BaseController
     {
         return toAjax(partnerService.deletePartnerByIds(ids));
     }
+
+    /**
+     * 重置密码
+     */
+    @PreAuthorize("@ss.hasPermi('manage:partner:edit')")
+    @Log(title = "合作商", businessType = BusinessType.UPDATE)
+    @PutMapping("/resetPwd/{id}")
+    public AjaxResult resetPwd(@PathVariable Long id)
+    {
+        return toAjax(partnerService.resetPwd(id));
+    }
 }

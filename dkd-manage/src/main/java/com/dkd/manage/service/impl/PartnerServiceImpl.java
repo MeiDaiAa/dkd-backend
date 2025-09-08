@@ -107,4 +107,18 @@ public class PartnerServiceImpl implements IPartnerService
     public List<PartnerVO> selectPartnerVoList(Partner partner) {
         return partnerMapper.selectPartnerVoList(partner);
     }
+
+    /**
+     * 重置合作商密码
+     *
+     * @param id 合作商主键
+     * @return 结果
+     */
+    @Override
+    public int resetPwd(Long id) {
+        Partner p = new Partner();
+        p.setId(id);
+        p.setPassword(SecurityUtils.encryptPassword("123456"));
+        return partnerMapper.updatePartner(p);
+    }
 }
