@@ -60,8 +60,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         from tb_node n
                  left join tb_vending_machine v on v.node_id = n.id
         <where>
-            <if test="nodeName != null  and nodeName != ''"> and node_name like concat('%', #{nodeName}, '%')</if>
-            <if test="regionId != null "> and region_id = #{regionId}</if>
+            <if test="nodeName != null  and nodeName != ''"> and n.node_name like concat('%', #{nodeName}, '%')</if>
+            <if test="regionId != null "> and n.region_id = #{regionId}</if>
         </where>
         group by n.id
     </select>
