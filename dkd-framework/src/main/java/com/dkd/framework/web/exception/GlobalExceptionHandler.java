@@ -1,8 +1,11 @@
 package com.dkd.framework.web.exception;
 
 import javax.servlet.http.HttpServletRequest;
+
+import com.dkd.common.core.domain.R;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.BindException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -134,5 +137,18 @@ public class GlobalExceptionHandler
     public AjaxResult handleDemoModeException(DemoModeException e)
     {
         return AjaxResult.error("演示模式，不允许操作");
+    }
+
+    // 捕获外键约束异常
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public AjaxResult handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
+        // 这里可以进一步判断具体的 SQL 错误信息
+        String message = ex.getRootCause() != null ? ex.getRootCause().getMessage() : ex.getMessage();
+
+        if (message != null && message.contains("foreign key constraint fails")) {
+            return AjaxResult.error("该数据有关联，无法删除！");
+        }
+
+        return AjaxResult.error("数据操作异常，请检查关联数据！");
     }
 }
