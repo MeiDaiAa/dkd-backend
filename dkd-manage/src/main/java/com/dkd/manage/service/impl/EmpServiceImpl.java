@@ -2,6 +2,10 @@ package com.dkd.manage.service.impl;
 
 import java.util.List;
 import com.dkd.common.utils.DateUtils;
+import com.dkd.manage.domain.Region;
+import com.dkd.manage.domain.Role;
+import com.dkd.manage.mapper.RegionMapper;
+import com.dkd.manage.mapper.RoleMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.dkd.manage.mapper.EmpMapper;
@@ -19,6 +23,10 @@ public class EmpServiceImpl implements IEmpService
 {
     @Autowired
     private EmpMapper empMapper;
+    @Autowired
+    private RegionMapper regionMapper;
+    @Autowired
+    private RoleMapper roleMapper;
 
     /**
      * 查询人员列表
@@ -53,6 +61,13 @@ public class EmpServiceImpl implements IEmpService
     @Override
     public int insertEmp(Emp emp)
     {
+        /*人员列表的冗余字段填充*/
+        Region region = regionMapper.selectRegionById(emp.getRegionId());
+        Role role = roleMapper.selectRoleByRoleId(emp.getRoleId());
+
+        emp.setRoleId(role.getRoleId());
+        emp.setRoleCode(role.getRoleCode());
+        emp.setRegionName(region.getRegionName());
         emp.setCreateTime(DateUtils.getNowDate());
         return empMapper.insertEmp(emp);
     }
