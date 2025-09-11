@@ -68,6 +68,8 @@ public class EmpServiceImpl implements IEmpService
         emp.setRoleId(role.getRoleId());
         emp.setRoleCode(role.getRoleCode());
         emp.setRegionName(region.getRegionName());
+        emp.setRoleName(role.getRoleName());
+
         emp.setCreateTime(DateUtils.getNowDate());
         return empMapper.insertEmp(emp);
     }
@@ -81,6 +83,15 @@ public class EmpServiceImpl implements IEmpService
     @Override
     public int updateEmp(Emp emp)
     {
+        /*人员列表的冗余字段同步修改*/
+        Region region = regionMapper.selectRegionById(emp.getRegionId());
+        Role role = roleMapper.selectRoleByRoleId(emp.getRoleId());
+
+        emp.setRoleId(role.getRoleId());
+        emp.setRoleCode(role.getRoleCode());
+        emp.setRegionName(region.getRegionName());
+        emp.setRoleName(role.getRoleName());
+
         emp.setUpdateTime(DateUtils.getNowDate());
         return empMapper.updateEmp(emp);
     }
