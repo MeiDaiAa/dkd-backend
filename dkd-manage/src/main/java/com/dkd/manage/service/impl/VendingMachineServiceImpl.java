@@ -91,6 +91,20 @@ public class VendingMachineServiceImpl implements IVendingMachineService
     @Override
     public int updateVendingMachine(VendingMachine vendingMachine)
     {
+        //设备编号
+        vendingMachine.setInnerCode(UUIDUtils.getUUID());
+        VmType vmType = vmTypeService.selectVmTypeById(vendingMachine.getVmTypeId());
+        //渠道最大容量
+        vendingMachine.setChannelMaxCapacity(vmType.getChannelMaxCapacity());
+
+        Node node = nodeService.selectNodeById(vendingMachine.getNodeId());
+        //节点信息
+        if(node != null) {
+            BeanUtils.copyProperties(node, vendingMachine, "id");
+            vendingMachine.setAddr(node.getAddress());
+        }
+        //设备状态
+        vendingMachine.setVmStatus(0L);
         vendingMachine.setUpdateTime(DateUtils.getNowDate());
         return vendingMachineMapper.updateVendingMachine(vendingMachine);
     }
