@@ -58,4 +58,6 @@ public interface ChannelMapper
      * @return 结果
      */
     public int deleteChannelByIds(Long[] ids);
+
+    int insertBatchChannel(List<Channel> channels);
 }

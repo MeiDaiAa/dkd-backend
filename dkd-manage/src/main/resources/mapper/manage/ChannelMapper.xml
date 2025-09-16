@@ -66,6 +66,32 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateTime != null">#{updateTime},</if>
          </trim>
     </insert>
+    <insert id="insertBatchChannel">
+        insert into tb_channel (
+        channel_code,
+        sku_id,
+        vm_id,
+        inner_code,
+        max_capacity,
+        current_capacity,
+        create_time,
+        update_time
+        )
+        values
+        <foreach collection="list" item="item" separator=",">
+            (
+            #{item.channelCode},
+            #{item.skuId},
+            #{item.vmId},
+            #{item.innerCode},
+            #{item.maxCapacity},
+            #{item.currentCapacity},
+            #{item.createTime},
+            #{item.updateTime}
+            )
+        </foreach>
+    </insert>
+
 
     <update id="updateChannel" parameterType="Channel">
         update tb_channel

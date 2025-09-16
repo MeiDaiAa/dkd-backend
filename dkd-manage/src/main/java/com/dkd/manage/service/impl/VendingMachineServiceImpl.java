@@ -1,8 +1,10 @@
 package com.dkd.manage.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import com.dkd.common.utils.DateUtils;
 import com.dkd.common.utils.uuid.UUIDUtils;
+import com.dkd.manage.domain.Channel;
 import com.dkd.manage.domain.Node;
 import com.dkd.manage.domain.VmType;
 import com.dkd.manage.service.INodeService;
@@ -29,7 +31,8 @@ public class VendingMachineServiceImpl implements IVendingMachineService
     private IVmTypeService vmTypeService;
     @Autowired
     private INodeService nodeService;
-
+    @Autowired
+    private ChannelServiceImpl channelService;
     /**
      * 查询设备管理
      * 
@@ -79,7 +82,36 @@ public class VendingMachineServiceImpl implements IVendingMachineService
         vendingMachine.setVmStatus(0L);
         vendingMachine.setUpdateTime(DateUtils.getNowDate());
         vendingMachine.setCreateTime(DateUtils.getNowDate());
-        return vendingMachineMapper.insertVendingMachine(vendingMachine);
+
+        int result = vendingMachineMapper.insertVendingMachine(vendingMachine);
+
+        //新增设备时更新货道信息
+        Long row = vmType.getVmRow(), col = vmType.getVmCol();
+        List<Channel> channels = new ArrayList<>();
+        for (Long i = 1L; i <= row; i++) {
+            for (Long l = 1L; l <= col; l++) {
+                Channel channel = new Channel();
+                //货道编号
+                channel.setChannelCode(i + "-" + l);
+                //货道商品ID
+                channel.setSkuId(0L);
+                //售货机货道
+                channel.setVmId(vendingMachine.getId());
+                //售货机编号
+                channel.setInnerCode(vendingMachine.getInnerCode());
+                //货道最大容量
+                channel.setMaxCapacity(vmType.getChannelMaxCapacity());
+                //货道当前容量
+                channel.setCurrentCapacity(0L);
+                channel.setCreateTime(DateUtils.getNowDate());
+                channel.setUpdateTime(DateUtils.getNowDate());
+
+                channels.add(channel);
+            }
+        }
+        channelService.insertChannelList(channels);
+
+        return result;
     }
 
     /**
