@@ -2,6 +2,8 @@ package com.dkd.manage.controller;
 
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
+
+import com.dkd.manage.domain.dto.ChannelListDTO;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -110,5 +112,15 @@ public class ChannelController extends BaseController
     @PreAuthorize("@ss.hasPermi('manage:machine:list')")
     public AjaxResult getByInnerCode(@PathVariable("innerCode") String innerCode){
         return success(channelService.getByInnerCode(innerCode));
+    }
+
+    /**
+     * 货道关联商品
+     */
+    @PutMapping("/config")
+    @PreAuthorize("@ss.hasPermi('manage:channel:edit')")
+    @Log(title = "售货机货道", businessType = BusinessType.UPDATE)
+    public AjaxResult relateGoods(@RequestBody ChannelListDTO channelListDTO){
+        return success(channelService.batchUpdateChannel(channelListDTO));
     }
 }

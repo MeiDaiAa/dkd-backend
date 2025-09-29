@@ -2,6 +2,7 @@ package com.dkd.manage.service;
 
 import java.util.List;
 import com.dkd.manage.domain.Channel;
+import com.dkd.manage.domain.dto.ChannelListDTO;
 import com.dkd.manage.domain.vo.ChannelVO;
 
 /**
@@ -83,4 +84,12 @@ public interface IChannelService {
      * @return 货道信息VO
      */
     List<ChannelVO> getByInnerCode(String innerCode);
+
+    /**
+     * 批量修改货道信息
+     *
+     * @param channelListDTO 货道列表DTO
+     * @return 结果
+     */
+    int batchUpdateChannel(ChannelListDTO channelListDTO);
 }

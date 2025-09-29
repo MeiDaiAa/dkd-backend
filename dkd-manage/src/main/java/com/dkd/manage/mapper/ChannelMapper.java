@@ -4,6 +4,7 @@ import java.util.List;
 import com.dkd.manage.domain.Channel;
 import com.dkd.manage.domain.vo.ChannelVO;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 /**
  * 售货机货道Mapper接口
@@ -79,4 +80,9 @@ public interface ChannelMapper
      * @return 货道信息VO
      */
     List<ChannelVO> getByInnerCode(String innerCode);
+
+    @Select("select * from tb_channel where inner_code = #{innerCode} and channel_code = #{channelCode}")
+    Channel getByInnerCodeAndchannelCode(@Param("innerCode") String innerCode, @Param("channelCode") String channelCode);
+
+    int batchUpdateChannel(List<Channel> channels);
 }
