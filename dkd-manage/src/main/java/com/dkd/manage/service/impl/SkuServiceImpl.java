@@ -1,6 +1,9 @@
 package com.dkd.manage.service.impl;
 
+import java.rmi.ServerException;
 import java.util.List;
+
+import com.dkd.common.exception.ServiceException;
 import com.dkd.common.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,6 +22,8 @@ public class SkuServiceImpl implements ISkuService
 {
     @Autowired
     private SkuMapper skuMapper;
+    @Autowired
+    private ChannelServiceImpl channelService;
 
     /**
      * 查询商品管理
@@ -79,6 +84,12 @@ public class SkuServiceImpl implements ISkuService
     @Override
     public int deleteSkuBySkuIds(Long[] skuIds)
     {
+        // 删除商品之前检查商品是否被售货机使用（是否有货道关联此商品）
+        int cnt = channelService.selectCountBySkuId(skuIds);
+        if (cnt > 0) {
+            throw new ServiceException("此商品被货道关联，无法删除");
+        }
+
         return skuMapper.deleteSkuBySkuIds(skuIds);
     }
 

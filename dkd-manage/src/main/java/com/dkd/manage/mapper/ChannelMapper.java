@@ -2,6 +2,7 @@ package com.dkd.manage.mapper;
 
 import java.util.List;
 import com.dkd.manage.domain.Channel;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 售货机货道Mapper接口
@@ -60,4 +61,12 @@ public interface ChannelMapper
     public int deleteChannelByIds(Long[] ids);
 
     int insertBatchChannel(List<Channel> channels);
+
+    /**
+     * 根据商品Id查询货道数量
+     *
+     * @param skuIds 商品Id
+     * @return 货道数量
+     */
+    int selectCountBySkuIds(@Param("skuIds") Long[] skuIds);
 }

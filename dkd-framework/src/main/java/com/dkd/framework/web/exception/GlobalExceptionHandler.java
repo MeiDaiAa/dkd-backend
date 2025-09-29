@@ -139,14 +139,24 @@ public class GlobalExceptionHandler
         return AjaxResult.error("演示模式，不允许操作");
     }
 
-    // 捕获外键约束异常
+    /**
+     * 数据完整性异常
+     *
+     * @param ex 数据完整性异常
+     * @return 错误信息
+     */
     @ExceptionHandler(DataIntegrityViolationException.class)
     public AjaxResult handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
         // 这里可以进一步判断具体的 SQL 错误信息
         String message = ex.getRootCause() != null ? ex.getRootCause().getMessage() : ex.getMessage();
 
+        // 删除数据，存在外键关联
         if (message != null && message.contains("foreign key constraint fails")) {
             return AjaxResult.error("该数据有关联，无法删除！");
+        }
+        // 添加数据，数据唯一，已存在
+        if (message != null && message.contains("Duplicate entry")) {
+            return AjaxResult.error("无法保存，名称已存在！");
         }
 
         return AjaxResult.error("数据操作异常，请检查关联数据！");
