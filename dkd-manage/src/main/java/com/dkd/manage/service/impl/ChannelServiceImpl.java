@@ -1,7 +1,7 @@
 package com.dkd.manage.service.impl;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+
 import com.dkd.common.utils.DateUtils;
 import com.dkd.manage.domain.dto.ChannelDTO;
 import com.dkd.manage.domain.dto.ChannelListDTO;
@@ -143,17 +143,37 @@ public class ChannelServiceImpl implements IChannelService
     public int batchUpdateChannel(ChannelListDTO channelListDTO) {
         List<ChannelDTO> channelList = channelListDTO.getChannelList();
         String innerCode = channelListDTO.getInnerCode();
-        List<Channel> channels = new ArrayList<>();
+//        List<Channel> channels = new ArrayList<>();
+//        channelList.forEach(channelDTO -> {
+//            //通过货道编号和售货机软编号查询货道信息
+//            Channel channel = channelMapper.getByInnerCodeAndchannelCode(innerCode, channelDTO.getChannelCode());
+//            if (channel != null) {
+//                channel.setSkuId(channelDTO.getSkuId());
+//                channel.setUpdateTime(DateUtils.getNowDate());
+//                channels.add(channel);
+//            }
+//        });
+
+        // 创建一个Map，用于存储货道编号和商品Id
+        Map<String, Long> map = new HashMap<>();
         channelList.forEach(channelDTO -> {
-            //通过货道编号和售货机软编号查询货道信息
-            Channel channel = channelMapper.getByInnerCodeAndchannelCode(innerCode, channelDTO.getChannelCode());
-            if (channel != null) {
-                channel.setSkuId(channelDTO.getSkuId());
-                channel.setUpdateTime(DateUtils.getNowDate());
-                channels.add(channel);
+            map.put(channelDTO.getChannelCode(), channelDTO.getSkuId());
+        });
+
+        // 先查询当前售货机的说有货道
+        Channel channel = new Channel();
+        channel.setInnerCode(innerCode);
+        List<Channel> channels = channelMapper.selectChannelList(channel);
+        // 遍历货道列表，判断当前货道编号是否在map中，如果在，就是需要修改货道，更新信息
+        List<Channel> needUpdateChannels = new ArrayList<>();
+        channels.forEach(c -> {
+            if(map.containsKey(c.getChannelCode())){
+                c.setSkuId(map.get(c.getChannelCode()));
+                c.setUpdateTime(DateUtils.getNowDate());
+                needUpdateChannels.add(c);
             }
         });
 
-        return channelMapper.batchUpdateChannel(channels);
+        return channelMapper.batchUpdateChannel(needUpdateChannels);
     }
 }
