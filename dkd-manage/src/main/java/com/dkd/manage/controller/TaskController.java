@@ -2,6 +2,8 @@ package com.dkd.manage.controller;
 
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
+
+import com.dkd.manage.domain.dto.TaskDTO;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,10 +41,12 @@ public class TaskController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('manage:task:list')")
     @GetMapping("/list")
-    public TableDataInfo list(Task task)
+//    public TableDataInfo list(Task task)
+    public TableDataInfo list(TaskDTO task)
     {
         startPage();
-        List<Task> list = taskService.selectTaskList(task);
+//        List<Task> list = taskService.selectTaskList(task);
+        List<TaskDTO> list = taskService.selectTaskDtoList(task);
         return getDataTable(list);
     }
 

@@ -2,6 +2,7 @@ package com.dkd.manage.service.impl;
 
 import java.util.List;
 import com.dkd.common.utils.DateUtils;
+import com.dkd.manage.domain.dto.TaskDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.dkd.manage.mapper.TaskMapper;
@@ -92,5 +93,16 @@ public class TaskServiceImpl implements ITaskService
     public int deleteTaskByTaskId(Long taskId)
     {
         return taskMapper.deleteTaskByTaskId(taskId);
+    }
+
+    /**
+     * 查询工单列表
+     *
+     * @param task 工单
+     * @return 工单集合
+     */
+    @Override
+    public List<TaskDTO> selectTaskDtoList(TaskDTO task) {
+        return taskMapper.selectTaskDtoList(task);
     }
 }
