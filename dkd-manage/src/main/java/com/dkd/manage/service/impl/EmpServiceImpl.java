@@ -1,11 +1,15 @@
 package com.dkd.manage.service.impl;
 
 import java.util.List;
+
+import com.dkd.common.exception.ServiceException;
 import com.dkd.common.utils.DateUtils;
 import com.dkd.manage.domain.Region;
 import com.dkd.manage.domain.Role;
+import com.dkd.manage.domain.VendingMachine;
 import com.dkd.manage.mapper.RegionMapper;
 import com.dkd.manage.mapper.RoleMapper;
+import com.dkd.manage.service.IVendingMachineService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.dkd.manage.mapper.EmpMapper;
@@ -27,6 +31,8 @@ public class EmpServiceImpl implements IEmpService
     private RegionMapper regionMapper;
     @Autowired
     private RoleMapper roleMapper;
+    @Autowired
+    private IVendingMachineService vendingMachineService;
 
     /**
      * 查询人员列表
@@ -118,5 +124,30 @@ public class EmpServiceImpl implements IEmpService
     public int deleteEmpById(Long id)
     {
         return empMapper.deleteEmpById(id);
+
+    }
+
+    /**
+     * 根据售货机获取维修人员列表
+     *
+     * @param vendingId 售货机id
+     * @return 人员列表集合
+     */
+    @Override
+    public List<Emp> getEmpListByVendingId(String vendingId) {
+        // 1. 先通过售货机id查询售货机
+        VendingMachine vendingMachine = new VendingMachine();
+        vendingMachine.setInnerCode(vendingId);
+        List<VendingMachine> vendingMachines = vendingMachineService.selectVendingMachineList(vendingMachine);
+
+        if (vendingMachines == null) {
+            throw new ServiceException("未查询到售货机信息");
+        }
+        // 2. 获取售货机信息
+        vendingMachine = vendingMachines.get(0);
+
+        // 3. 通过售货机对象中的区域id查询维修人员列表
+        Long regionId = vendingMachine.getRegionId();
+        return empMapper.selectEmpListByRegionId(regionId);
     }
 }

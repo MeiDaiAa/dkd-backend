@@ -101,4 +101,14 @@ public class EmpController extends BaseController
     {
         return toAjax(empService.deleteEmpByIds(ids));
     }
+
+    /**
+     * 根据售货机获取维修人员列表
+     */
+    @PreAuthorize("@ss.hasPermi('manage:emp:list')")
+    @GetMapping("/operationList/{innerCode}")
+    public AjaxResult getEmpListByVendingId(@PathVariable("innerCode") String vendingId)
+    {
+        return success(empService.getEmpListByVendingId(vendingId));
+    }
 }

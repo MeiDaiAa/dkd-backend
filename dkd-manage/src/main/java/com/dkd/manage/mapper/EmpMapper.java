@@ -2,6 +2,7 @@ package com.dkd.manage.mapper;
 
 import java.util.List;
 import com.dkd.manage.domain.Emp;
+import org.apache.ibatis.annotations.Select;
 
 /**
  * 人员列表Mapper接口
@@ -58,4 +59,13 @@ public interface EmpMapper
      * @return 结果
      */
     public int deleteEmpByIds(Long[] ids);
+
+    /**
+     * 根据区域id查询人员列表
+     *
+     * @param regionId
+     * @return
+     */
+    @Select("select * from tb_emp where region_id = #{regionId}")
+    List<Emp> selectEmpListByRegionId(Long regionId);
 }
