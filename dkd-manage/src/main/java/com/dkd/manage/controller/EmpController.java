@@ -2,6 +2,8 @@ package com.dkd.manage.controller;
 
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
+
+import com.dkd.common.constant.DkdContants;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -103,12 +105,22 @@ public class EmpController extends BaseController
     }
 
     /**
-     * 根据售货机获取维修人员列表
+     * 根据售货机软编号获取运维人员列表
      */
     @PreAuthorize("@ss.hasPermi('manage:emp:list')")
     @GetMapping("/operationList/{innerCode}")
-    public AjaxResult getEmpListByVendingId(@PathVariable("innerCode") String vendingId)
+    public AjaxResult getOperationEmpListByVendingId(@PathVariable("innerCode") String vendingId)
     {
-        return success(empService.getEmpListByVendingId(vendingId));
+        return success(empService.getEmpListByVendingIdAndRoleCode(vendingId, DkdContants.ROLE_CODE_OPERATOR));
+    }
+
+    /**
+     * 根据售货机软编号获取运营人员列表
+     */
+    @PreAuthorize("@ss.hasPermi('manage:emp:list')")
+    @GetMapping("/businessList/{innerCode}")
+    public AjaxResult getBusinessEmpListByVendingId(@PathVariable("innerCode") String vendingId)
+    {
+        return success(empService.getEmpListByVendingIdAndRoleCode(vendingId, DkdContants.ROLE_CODE_BUSINESS));
     }
 }

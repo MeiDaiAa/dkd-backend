@@ -60,10 +60,11 @@ public interface IEmpService
     public int deleteEmpById(Long id);
 
     /**
-     * 根据售货机获取维修人员列表
+     * 根据售货机获取工作人员列表
      *
      * @param vendingId 售货机id
-     * @return 人员列表集合
+     * @param roleCode
+     * @return
      */
-    List<Emp> getEmpListByVendingId(String vendingId);
+    List<Emp> getEmpListByVendingIdAndRoleCode(String vendingId, String roleCode);
 }

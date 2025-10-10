@@ -2,6 +2,7 @@ package com.dkd.manage.service.impl;
 
 import java.util.List;
 
+import com.dkd.common.constant.DkdContants;
 import com.dkd.common.exception.ServiceException;
 import com.dkd.common.utils.DateUtils;
 import com.dkd.manage.domain.Region;
@@ -15,8 +16,6 @@ import org.springframework.stereotype.Service;
 import com.dkd.manage.mapper.EmpMapper;
 import com.dkd.manage.domain.Emp;
 import com.dkd.manage.service.IEmpService;
-
-import static com.dkd.common.constant.DkdContants.*;
 
 /**
  * 人员列表Service业务层处理
@@ -130,13 +129,14 @@ public class EmpServiceImpl implements IEmpService
     }
 
     /**
-     * 根据售货机获取维修人员列表
+     * 根据售货机获取工作人员列表
      *
      * @param vendingId 售货机id
-     * @return 人员列表集合
+     * @param roleCode
+     * @return
      */
     @Override
-    public List<Emp> getEmpListByVendingId(String vendingId) {
+    public List<Emp> getEmpListByVendingIdAndRoleCode(String vendingId, String roleCode) {
         // 1. 先通过售货机id查询售货机
         VendingMachine vendingMachine = new VendingMachine();
         vendingMachine.setInnerCode(vendingId);
@@ -151,10 +151,10 @@ public class EmpServiceImpl implements IEmpService
         // 3. 通过售货机对象中的区域id查询维修人员列表
         Long regionId = vendingMachine.getRegionId();
         List<Emp> emps = empMapper.selectEmpListByRegionId(regionId);
-        // 4. 过滤掉非维修人员和禁用员工
+        // 4. 过滤掉非指定人员和禁用员工
         return emps.stream()
-                .filter(emp -> ROLE_CODE_OPERATOR.equals(emp.getRoleCode()))
-                .filter(emp -> EMP_STATUS_DISABLE.equals(emp.getStatus()))
+                .filter(emp -> roleCode.equals(emp.getRoleCode()))
+                .filter(emp -> DkdContants.EMP_STATUS_NORMAL.equals(emp.getStatus()))
                 .toList();
     }
 }
