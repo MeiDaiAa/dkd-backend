@@ -16,6 +16,8 @@ import com.dkd.manage.mapper.EmpMapper;
 import com.dkd.manage.domain.Emp;
 import com.dkd.manage.service.IEmpService;
 
+import static com.dkd.common.constant.DkdContants.*;
+
 /**
  * 人员列表Service业务层处理
  * 
@@ -148,6 +150,11 @@ public class EmpServiceImpl implements IEmpService
 
         // 3. 通过售货机对象中的区域id查询维修人员列表
         Long regionId = vendingMachine.getRegionId();
-        return empMapper.selectEmpListByRegionId(regionId);
+        List<Emp> emps = empMapper.selectEmpListByRegionId(regionId);
+        // 4. 过滤掉非维修人员和禁用员工
+        return emps.stream()
+                .filter(emp -> ROLE_CODE_OPERATOR.equals(emp.getRoleCode()))
+                .filter(emp -> EMP_STATUS_DISABLE.equals(emp.getStatus()))
+                .toList();
     }
 }
