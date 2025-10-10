@@ -58,4 +58,12 @@ public interface IVendingMachineService
      * @return 结果
      */
     public int deleteVendingMachineById(Long id);
+
+    /**
+     * 根据售货机编号查询售货机信息
+     *
+     * @param vendingId 售货机编号
+     * @return 售货机信息
+     */
+    VendingMachine selectVendingMachineByInnerCode(String vendingId);
 }

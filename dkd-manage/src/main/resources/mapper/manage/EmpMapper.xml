@@ -25,9 +25,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectEmpList" parameterType="Emp" resultMap="EmpResult">
         <include refid="selectEmpVo"/>
-        <where>  
+        <where>
             <if test="userName != null  and userName != ''"> and user_name like concat('%', #{userName}, '%')</if>
+            <if test="regionId != null "> and region_id = #{regionId}</if>
             <if test="regionName != null  and regionName != ''"> and region_name like concat('%', #{regionName}, '%')</if>
+            <if test="roleId != null "> and role_id = #{roleId}</if>
+            <if test="roleCode != null  and roleCode != ''"> and role_code = #{roleCode}</if>
             <if test="roleName != null  and roleName != ''"> and role_name like concat('%', #{roleName}, '%')</if>
             <if test="mobile != null  and mobile != ''"> and mobile = #{mobile}</if>
             <if test="status != null "> and status = #{status}</if>

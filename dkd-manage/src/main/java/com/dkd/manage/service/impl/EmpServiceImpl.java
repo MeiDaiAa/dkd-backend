@@ -138,23 +138,21 @@ public class EmpServiceImpl implements IEmpService
     @Override
     public List<Emp> getEmpListByVendingIdAndRoleCode(String vendingId, String roleCode) {
         // 1. 先通过售货机id查询售货机
-        VendingMachine vendingMachine = new VendingMachine();
-        vendingMachine.setInnerCode(vendingId);
-        List<VendingMachine> vendingMachines = vendingMachineService.selectVendingMachineList(vendingMachine);
+        VendingMachine vendingMachine = vendingMachineService.selectVendingMachineByInnerCode(vendingId);
 
-        if (vendingMachines == null) {
+        if (vendingMachine == null) {
             throw new ServiceException("未查询到售货机信息");
         }
-        // 2. 获取售货机信息
-        vendingMachine = vendingMachines.get(0);
 
-        // 3. 通过售货机对象中的区域id查询维修人员列表
-        Long regionId = vendingMachine.getRegionId();
-        List<Emp> emps = empMapper.selectEmpListByRegionId(regionId);
-        // 4. 过滤掉非指定人员和禁用员工
-        return emps.stream()
-                .filter(emp -> roleCode.equals(emp.getRoleCode()))
-                .filter(emp -> DkdContants.EMP_STATUS_NORMAL.equals(emp.getStatus()))
-                .toList();
+        // 2. 通过售货机对象中的区域id查询维修人员列表
+        Emp emp = new Emp();
+        // 指定区域id
+        emp.setRegionId(vendingMachine.getRegionId());
+        // 状态
+        emp.setStatus(DkdContants.EMP_STATUS_NORMAL);
+        // 角色
+        emp.setRoleCode(roleCode);
+
+        return empMapper.selectEmpList(emp);
     }
 }
