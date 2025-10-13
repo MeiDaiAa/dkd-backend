@@ -67,4 +67,11 @@ public interface ITaskService
      * @return 工单集合
      */
     List<TaskDTO> selectTaskDtoList(TaskDTO task);
+
+    /**
+     * 取消工单
+     * @param task
+     * @return 结果
+     */
+    int cancelTask(Task task);
 }

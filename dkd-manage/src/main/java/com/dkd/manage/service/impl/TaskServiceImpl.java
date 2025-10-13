@@ -116,6 +116,8 @@ public class TaskServiceImpl implements ITaskService
             // 8.保存工单详情
             List<TaskDetailsDto> details = taskDTO.getDetails();
             if (CollUtil.isEmpty(details)) {
+                // 取消工单
+                cancelTask(task);
                 throw new ServiceException("补货工单详情不能为空");
             }
             // 将dto转为po补充属性
@@ -127,7 +129,6 @@ public class TaskServiceImpl implements ITaskService
             // 批量新增
             taskDetailsService.batchInsertTaskDetails(taskDetailsList);
         }
-
 
         return taskResult;
     }
@@ -275,5 +276,30 @@ public class TaskServiceImpl implements ITaskService
     @Override
     public List<TaskDTO> selectTaskDtoList(TaskDTO task) {
         return taskMapper.selectTaskDtoList(task);
+    }
+
+    /**
+     * 取消工单
+     * @param task
+     * @return 结果
+     */
+    @Override
+    public int cancelTask(Task task) {
+        //1. 判断工单状态是否可以取消
+        // 先根据工单id查询数据库
+        Task taskDb = taskMapper.selectTaskByTaskId(task.getTaskId());
+        // 判断工单状态是否为已取消，如果是，则抛出异常
+        if (taskDb.getTaskStatus().equals(DkdContants.TASK_STATUS_CANCEL)) {
+            throw new ServiceException("该工单已取消了，不能再次取消");
+        }
+        // 判断工单状态是否为已完成，如果是，则抛出异常
+        if (taskDb.getTaskStatus().equals(DkdContants.TASK_STATUS_FINISH)) {
+            throw new ServiceException("该工单已完成了，不能取消");
+        }
+        //2. 设置更新字段
+        task.setTaskStatus(DkdContants.TASK_STATUS_CANCEL);// 工单状态：取消
+        task.setUpdateTime(DateUtils.getNowDate());// 更新时间
+        //3. 更新工单
+        return taskMapper.updateTask(task);// 注意别传错了，这里是前端task参数
     }
 }
