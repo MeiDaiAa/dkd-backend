@@ -79,9 +79,10 @@ public class TaskController extends BaseController
     @PreAuthorize("@ss.hasPermi('manage:task:add')")
     @Log(title = "工单", businessType = BusinessType.INSERT)
     @PostMapping
-    public AjaxResult add(@RequestBody Task task)
+    public AjaxResult add(@RequestBody TaskDTO taskDTO)
     {
-        return toAjax(taskService.insertTask(task));
+        taskDTO.setAssignorId(getUserId());
+        return toAjax(taskService.insertTask(taskDTO));
     }
 
     /**

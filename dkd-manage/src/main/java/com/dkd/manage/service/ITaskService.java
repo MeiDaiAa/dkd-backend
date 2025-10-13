@@ -31,10 +31,10 @@ public interface ITaskService
     /**
      * 新增工单
      * 
-     * @param task 工单
+     * @param taskDTO 工单
      * @return 结果
      */
-    public int insertTask(Task task);
+    public int insertTask(TaskDTO taskDTO);
 
     /**
      * 修改工单
